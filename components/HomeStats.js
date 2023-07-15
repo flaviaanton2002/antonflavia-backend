@@ -1,11 +1,12 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import Spinner from "./Spinner";
+import axios from "axios";
+import Spinner from "@/components/Spinner";
 import { subHours } from "date-fns";
 
 export default function HomeStats() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     setIsLoading(true);
     axios.get("/api/orders").then((res) => {
@@ -23,13 +24,12 @@ export default function HomeStats() {
         sum += lineSum;
       });
     });
-    console.log({ orders });
-    return new Intl.NumberFormat("sv-SE").format(sum);
+    return new Intl.NumberFormat("ro-RO").format(sum);
   }
 
   if (isLoading) {
     return (
-      <div className="my-4">
+      <div className="my-2">
         <Spinner fullWidth={true} />
       </div>
     );
@@ -47,7 +47,7 @@ export default function HomeStats() {
 
   return (
     <div>
-      <h2>Comenzi</h2>
+      <h2 className="mt-4 mb-2">Comenzi</h2>
       <div className="tiles-grid">
         <div className="tile">
           <h3 className="tile-header">Azi</h3>
@@ -69,7 +69,7 @@ export default function HomeStats() {
           </div>
         </div>
       </div>
-      <h2>Venit</h2>
+      <h2 className="mt-4 mb-2">Venit</h2>
       <div className="tiles-grid">
         <div className="tile">
           <h3 className="tile-header">Azi</h3>

@@ -4,24 +4,26 @@ import { signOut } from "next-auth/react";
 import Logo from "@/components/Logo";
 
 export default function Nav({ show }) {
-  const inactiveLink = "flex gap-1 p-1";
-  const activeLink = inactiveLink + " bg-highlight text-black rounded-sm";
+  const inactiveLink = "flex gap-2 p-1";
+  const activeLink = inactiveLink + " bg-myGray text-myBlack rounded-lg";
   const inactiveIcon = "w-6 h-6";
-  const activeIcon = inactiveIcon + " text-primary";
+  const activeIcon = inactiveIcon + " text-myOrange";
   const router = useRouter();
   const { pathname } = router;
+
   async function logout() {
     await router.push("/");
     await signOut();
   }
+
   return (
     <aside
       className={
         (show ? "left-0" : "-left-full") +
-        " top-0 text-gray-500 p-4 fixed w-full bg-bgGray h-full md:static md:w-auto transition-all"
+        " top-0 text-myBlack p-4 fixed bg-myWhite w-full h-full md:static md:w-auto transition-all min-h-screen"
       }
     >
-      <div className="mb-4 mr-4">
+      <div className="mb-4">
         <Logo />
       </div>
       <nav className="flex flex-col gap-2">
@@ -77,7 +79,7 @@ export default function Nav({ show }) {
           >
             <path
               fillRule="evenodd"
-              d="M2.625 6.75a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0zm4.875 0A.75.75 0 018.25 6h12a.75.75 0 010 1.5h-12a.75.75 0 01-.75-.75zM2.625 12a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0zM7.5 12a.75.75 0 01.75-.75h12a.75.75 0 010 1.5h-12A.75.75 0 017.5 12zm-4.875 5.25a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0zm4.875 0a.75.75 0 01.75-.75h12a.75.75 0 010 1.5h-12a.75.75 0 01-.75-.75z"
+              d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z"
               clipRule="evenodd"
             />
           </svg>
@@ -93,7 +95,16 @@ export default function Nav({ show }) {
             fill="currentColor"
             className={pathname.includes("/orders") ? activeIcon : inactiveIcon}
           >
-            <path d="M5.625 3.75a2.625 2.625 0 100 5.25h12.75a2.625 2.625 0 000-5.25H5.625zM3.75 11.25a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5H3.75zM3 15.75a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75zM3.75 18.75a.75.75 0 000 1.5h16.5a.75.75 0 000-1.5H3.75z" />
+            <path
+              fillRule="evenodd"
+              d="M7.502 6h7.128A3.375 3.375 0 0118 9.375v9.375a3 3 0 003-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 00-.673-.05A3 3 0 0015 1.5h-1.5a3 3 0 00-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6zM13.5 3A1.5 1.5 0 0012 4.5h4.5A1.5 1.5 0 0015 3h-1.5z"
+              clipRule="evenodd"
+            />
+            <path
+              fillRule="evenodd"
+              d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 013 20.625V9.375zM6 12a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75V12zm2.25 0a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5H9a.75.75 0 01-.75-.75zM6 15a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75V15zm2.25 0a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5H9a.75.75 0 01-.75-.75zM6 18a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H6.75a.75.75 0 01-.75-.75V18zm2.25 0a.75.75 0 01.75-.75h3.75a.75.75 0 010 1.5H9a.75.75 0 01-.75-.75z"
+              clipRule="evenodd"
+            />
           </svg>
           Comenzi
         </Link>

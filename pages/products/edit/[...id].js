@@ -10,6 +10,7 @@ export default function EditProductPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { id } = router.query;
+
   useEffect(() => {
     if (!id) {
       return;
@@ -20,9 +21,10 @@ export default function EditProductPage() {
       setIsLoading(false);
     });
   }, [id]);
+
   return (
     <Layout>
-      <h1>Editează produs</h1>
+      <h1>Editează</h1>
       {isLoading && <Spinner />}
       {productInfo && <ProductForm {...productInfo} />}
     </Layout>

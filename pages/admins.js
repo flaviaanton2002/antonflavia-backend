@@ -1,33 +1,72 @@
 import Layout from "@/components/Layout";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
 import Spinner from "@/components/Spinner";
 import { prettyDate } from "@/lib/date";
-import axios from "axios";
-import { useEffect, useState } from "react";
 
-export default function AdminsPage() {
+function AdminsPage() {
   const [email, setEmail] = useState("");
   const [adminEmails, setAdminEmails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   function addAdmin(ev) {
     ev.preventDefault();
     axios
       .post("/api/admins", { email })
       .then((res) => {
-        console.log(res.data);
-        alert("Administrator creat!");
+        Swal.fire({
+          title: "Administrator creat!",
+          icon: "success",
+          iconColor: "#ff8e3c",
+          color: "#0d0d0d",
+          confirmButtonColor: "#ff8e3c",
+          background: "#eff0f3",
+        });
         setEmail("");
         loadAdmins();
       })
       .catch((err) => {
-        alert(err.response.data.message);
+        Swal.fire({
+          title: "Eroare!",
+          icon: "error",
+          iconColor: "#ff8e3c",
+          color: "#0d0d0d",
+          confirmButtonColor: "#ff8e3c",
+          background: "#eff0f3",
+        });
       });
   }
-  function deleteAdmin(_id) {
-    axios.delete("/api/admins?_id=" + _id).then(() => {
-      alert("Administrator șters!");
-      loadAdmins();
+
+  function deleteAdmin(_id, email) {
+    Swal.fire({
+      title: `Vrei să ștergi administratorul "${email}"?`,
+      icon: "question",
+      iconColor: "#0d0d0d",
+      showCancelButton: true,
+      cancelButtonText: "Nu",
+      confirmButtonText: "Da",
+      color: "#0d0d0d",
+      confirmButtonColor: "#d9376e",
+      cancelButtonColor: "#0d0d0d",
+      background: "#eff0f3",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        axios.delete("/api/admins?_id=" + _id).then(() => {
+          Swal.fire({
+            title: "Administrator șters!",
+            icon: "success",
+            iconColor: "#ff8e3c",
+            color: "#0d0d0d",
+            confirmButtonColor: "#ff8e3c",
+            background: "#eff0f3",
+          });
+          loadAdmins();
+        });
+      }
     });
   }
+
   function loadAdmins() {
     setIsLoading(true);
     axios.get("/api/admins").then((res) => {
@@ -35,9 +74,11 @@ export default function AdminsPage() {
       setIsLoading(false);
     });
   }
+
   useEffect(() => {
     loadAdmins();
   }, []);
+
   return (
     <Layout>
       <h1>Administratori</h1>
@@ -49,14 +90,13 @@ export default function AdminsPage() {
             className="mb-0"
             value={email}
             onChange={(ev) => setEmail(ev.target.value)}
-            placeholder="email google"
+            placeholder="Email Google"
           />
           <button type="submit" className="btn-primary py-1 whitespace-nowrap">
             Adaugă administrator
           </button>
         </div>
       </form>
-
       <h2>Administratori existenți</h2>
       <table className="basic">
         <thead>
@@ -78,17 +118,19 @@ export default function AdminsPage() {
           )}
           {adminEmails.length > 0 &&
             adminEmails.map((adminEmail) => (
-              <tr>
+              <tr key={adminEmail.email}>
                 <td>{adminEmail.email}</td>
                 <td>
                   {adminEmail.createdAt && prettyDate(adminEmail.createdAt)}
                 </td>
                 <td>
                   <button
-                    onClick={() => deleteAdmin(adminEmail._id)}
+                    onClick={() =>
+                      deleteAdmin(adminEmail._id, adminEmail.email)
+                    }
                     className="btn-red"
                   >
-                    Delete
+                    Șterge
                   </button>
                 </td>
               </tr>
@@ -98,3 +140,5 @@ export default function AdminsPage() {
     </Layout>
   );
 }
+
+export default AdminsPage;

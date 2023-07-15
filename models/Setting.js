@@ -1,6 +1,6 @@
 import { model, models, Schema } from "mongoose";
 
-const settingSchema = new Schema(
+const SettingSchema = new Schema(
   {
     name: { type: String, required: true, unique: true },
     value: { type: Object },
@@ -8,4 +8,4 @@ const settingSchema = new Schema(
   { timestamps: true }
 );
 
-export const Setting = models?.Setting || model("Setting", settingSchema);
+export const Setting = models?.Setting || model("Setting", SettingSchema);

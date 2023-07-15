@@ -2,8 +2,9 @@ import Layout from "@/components/Layout";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
+import Swal from "sweetalert2";
 
-export default function SettingsPage() {
+function SettingsPage() {
   const [products, setProducts] = useState([]);
   const [featuredProductId, setFeaturedProductId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +40,10 @@ export default function SettingsPage() {
       value: shippingFee,
     });
     setIsLoading(false);
-    await alert("Setările au fost salvate!");
+    await Swal.fire({
+      title: "Setările au fost salvate!",
+      icon: "success",
+    });
   }
 
   return (
@@ -55,7 +59,9 @@ export default function SettingsPage() {
           >
             {products.length > 0 &&
               products.map((product) => (
-                <option value={product._id}>{product.title}</option>
+                <option key={product._id} value={product._id}>
+                  {product.title}
+                </option>
               ))}
           </select>
           <label>Preț transport (în RON)</label>
@@ -66,7 +72,7 @@ export default function SettingsPage() {
           />
           <div>
             <button onClick={saveSettings} className="btn-primary">
-              Salvează setările
+              Salvează
             </button>
           </div>
         </>
@@ -74,3 +80,5 @@ export default function SettingsPage() {
     </Layout>
   );
 }
+
+export default SettingsPage;

@@ -17,7 +17,7 @@ export default async function handle(req, res) {
       resolve({ fields, files });
     });
   });
-  console.log("length:", files.file.length);
+
   const client = new S3Client({
     region: "eu-north-1",
     credentials: {
@@ -25,6 +25,7 @@ export default async function handle(req, res) {
       secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
     },
   });
+
   const links = [];
   for (const file of files.file) {
     const ext = file.originalFilename.split(".").pop();

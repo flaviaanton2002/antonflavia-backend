@@ -1,20 +1,21 @@
 import Layout from "@/components/Layout";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Modal from "@/components/Modal";
+import Swal from "sweetalert2";
 import Spinner from "@/components/Spinner";
 
-export default function Categories() {
+function Categories() {
   const [editedCategory, setEditedCategory] = useState(null);
   const [name, setName] = useState("");
   const [parentCategory, setParentCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [properties, setProperties] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     fetchCategories();
   }, []);
+
   function fetchCategories() {
     setIsLoading(true);
     axios.get("/api/categories").then((result) => {
@@ -22,6 +23,7 @@ export default function Categories() {
       setIsLoading(false);
     });
   }
+
   async function saveCategory(ev) {
     ev.preventDefault();
     const data = {
@@ -44,6 +46,7 @@ export default function Categories() {
     setProperties([]);
     fetchCategories();
   }
+
   function editCategory(category) {
     setEditedCategory(category);
     setName(category.name);
@@ -55,11 +58,34 @@ export default function Categories() {
       }))
     );
   }
+
+  function deleteCategory(category) {
+    Swal.fire({
+      title: `Vrei să ștergi categoria "${category.name}"?`,
+      icon: "question",
+      iconColor: "#0d0d0d",
+      showCancelButton: true,
+      cancelButtonText: "Nu",
+      confirmButtonText: "Da",
+      color: "#0d0d0d",
+      confirmButtonColor: "#d9376e",
+      cancelButtonColor: "#0d0d0d",
+      background: "#eff0f3",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const { _id } = category;
+        await axios.delete("/api/categories?_id=" + _id);
+        fetchCategories();
+      }
+    });
+  }
+
   function addProperty() {
     setProperties((prev) => {
       return [...prev, { name: "", values: "" }];
     });
   }
+
   function handlePropertyNameChange(index, property, newName) {
     setProperties((prev) => {
       const properties = [...prev];
@@ -67,6 +93,7 @@ export default function Categories() {
       return properties;
     });
   }
+
   function handlePropertyValuesChange(index, property, newValues) {
     setProperties((prev) => {
       const properties = [...prev];
@@ -74,6 +101,7 @@ export default function Categories() {
       return properties;
     });
   }
+
   function removeProperty(indexToRemove) {
     setProperties((prev) => {
       return [...prev].filter((p, pIndex) => {
@@ -82,27 +110,15 @@ export default function Categories() {
     });
   }
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <Layout>
       <h1>Categorii</h1>
-      <label>
-        {editedCategory
-          ? `Editează categorie ${editedCategory.name}`
-          : "Creează categorie nouă"}
-      </label>
+      <label>{editedCategory ? `Editează` : "Creează"}</label>
       <form onSubmit={saveCategory}>
         <div className="flex gap-1">
           <input
             type="text"
-            placeholder={"nume categorie"}
+            placeholder={"Nume categorie"}
             onChange={(ev) => setName(ev.target.value)}
             value={name}
           />
@@ -110,10 +126,12 @@ export default function Categories() {
             onChange={(ev) => setParentCategory(ev.target.value)}
             value={parentCategory}
           >
-            <option value="">Nu are categorie părinte</option>
+            <option value="">Fără categorie părinte</option>
             {categories.length > 0 &&
-              categories.map((category) => (
-                <option value={category._id}>{category.name}</option>
+              categories.map((category, index) => (
+                <option key={index} value={category._id}>
+                  {category.name}
+                </option>
               ))}
           </select>
         </div>
@@ -122,13 +140,13 @@ export default function Categories() {
           <button
             onClick={addProperty}
             type="button"
-            className="btn-default text-sm mb-2"
+            className="btn-default text-sm mb-2 mt-1"
           >
             Adaugă proprietate nouă
           </button>
           {properties.length > 0 &&
             properties.map((property, index) => (
-              <div className="flex gap-1 mb-2">
+              <div key={index} className="flex gap-1 mb-2">
                 <input
                   type="text"
                   value={property.name}
@@ -136,16 +154,16 @@ export default function Categories() {
                   onChange={(ev) =>
                     handlePropertyNameChange(index, property, ev.target.value)
                   }
-                  placeholder="nume proprietate (exemplu: culoare)"
+                  placeholder="Nume proprietate (exemplu: culoare)"
                 />
                 <input
                   type="text"
                   className="mb-0"
-                  value={property.values}
                   onChange={(ev) =>
                     handlePropertyValuesChange(index, property, ev.target.value)
                   }
-                  placeholder="valori, separate prin virgulă"
+                  value={property.values}
+                  placeholder="Valori (separate prin virgulă)"
                 />
                 <button
                   onClick={() => removeProperty(index)}
@@ -179,7 +197,7 @@ export default function Categories() {
       </form>
       {!editedCategory && (
         <table className="basic mt-4">
-          <thead>
+          <thead className="font-bold">
             <tr>
               <td>Nume categorie</td>
               <td>Categorie părinte</td>
@@ -189,7 +207,7 @@ export default function Categories() {
           <tbody>
             {isLoading && (
               <tr>
-                <td colspan={3}>
+                <td colSpan={3}>
                   <div className="py-4">
                     <Spinner fullWidth={true} />
                   </div>
@@ -197,18 +215,21 @@ export default function Categories() {
               </tr>
             )}
             {categories.length > 0 &&
-              categories.map((category) => (
-                <tr>
+              categories.map((category, index) => (
+                <tr key={index}>
                   <td>{category.name}</td>
                   <td>{category?.parent?.name}</td>
                   <td>
                     <button
                       onClick={() => editCategory(category)}
-                      className="btn-default mr-1"
+                      className="btn-default mr-2"
                     >
                       Editează
                     </button>
-                    <button className="btn-red" onClick={openModal}>
+                    <button
+                      onClick={() => deleteCategory(category)}
+                      className="btn-red"
+                    >
                       Șterge
                     </button>
                   </td>
@@ -217,7 +238,8 @@ export default function Categories() {
           </tbody>
         </table>
       )}
-      {isModalOpen && <Modal onClose={closeModal} />}
     </Layout>
   );
 }
+
+export default Categories;

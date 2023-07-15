@@ -1,7 +1,6 @@
-import { mongooseConnect } from "@/lib/mongoose";
 import { Category } from "@/models/Category";
-import { getServerSession } from "next-auth";
-import { authOptions, isAdminRequest } from "@/pages/api/auth/[...nextauth]";
+import { mongooseConnect } from "@/lib/mongoose";
+import { isAdminRequest } from "@/pages/api/auth/[...nextauth]";
 
 export default async function handle(req, res) {
   const { method } = req;
@@ -33,5 +32,11 @@ export default async function handle(req, res) {
       }
     );
     res.json(categoryDoc);
+  }
+
+  if (method === "DELETE") {
+    const { _id } = req.query;
+    await Category.deleteOne({ _id });
+    res.json("ok");
   }
 }

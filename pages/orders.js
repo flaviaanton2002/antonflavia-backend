@@ -1,11 +1,12 @@
 import Layout from "@/components/Layout";
-import Spinner from "@/components/Spinner";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import Spinner from "@/components/Spinner";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     setIsLoading(true);
     axios.get("/api/orders").then((response) => {
@@ -13,6 +14,7 @@ export default function OrdersPage() {
       setIsLoading(false);
     });
   }, []);
+
   return (
     <Layout>
       <h1>Comenzi</h1>
@@ -35,8 +37,8 @@ export default function OrdersPage() {
             </tr>
           )}
           {orders.length > 0 &&
-            orders.map((order) => (
-              <tr>
+            orders.map((order, index) => (
+              <tr key={index}>
                 <td>{new Date(order.createdAt).toLocaleString()}</td>
                 <td>
                   {order.name} {order.email} <br />

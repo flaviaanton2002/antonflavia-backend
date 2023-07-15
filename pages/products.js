@@ -7,6 +7,7 @@ import Spinner from "@/components/Spinner";
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     setIsLoading(true);
     axios.get("/api/products").then((response) => {
@@ -20,14 +21,14 @@ export default function Products() {
       <Link className="btn-primary" href={"/products/new"}>
         Adaugă produs nou
       </Link>
-      <table className="basic mt-2">
+      <table className="basic mt-4">
         <thead>
           <tr>
-            <td>Nume produs</td>
+            <td className="font-bold">Nume produs</td>
             <td></td>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-myBlack">
           {isLoading && (
             <tr>
               <td colSpan={2}>
@@ -57,7 +58,7 @@ export default function Products() {
                   Editează
                 </Link>
                 <Link
-                  className="btn-red"
+                  className="btn-red rounded-lg"
                   href={"/products/delete/" + product._id}
                 >
                   <svg

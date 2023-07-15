@@ -1,10 +1,10 @@
-import { model, Schema, models } from "mongoose";
+import { model, models, Schema } from "mongoose";
 
-const adminSchema = new Schema(
+const AdminSchema = new Schema(
   {
     email: { type: String, required: true, unique: true },
   },
   { timestamps: true }
 );
 
-export const Admin = models?.Admin || model("Admin", adminSchema);
+export const Admin = models?.Admin || model("Admin", AdminSchema);
